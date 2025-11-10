@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { spells } from './src/data/spells';
-import SpellButton from './src/components/SpellButton';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { spells } from "./src/data/spells";
+import SpellButton from "./src/components/SpellButton";
 
 export default function App() {
   return (
@@ -17,13 +17,13 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#222',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#222",
   },
   title: {
     fontSize: 24,
-    color: '#fff',
+    color: "#fff",
     marginBottom: 20,
   },
 });
