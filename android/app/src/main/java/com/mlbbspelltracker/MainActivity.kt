@@ -5,34 +5,35 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import com.facebook.react.ReactActivity
-import com.facebook.react.ReactActivityDelegate
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
-import com.facebook.react.defaults.DefaultReactActivityDelegate
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ReactActivity() {
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-  override fun getMainComponentName(): String = "mlbbSpellTracker"
+        val startButton = findViewById<Button>(R.id.startOverlayButton)
+        val stopButton = findViewById<Button>(R.id.stopOverlayButton)
 
-  override fun createReactActivityDelegate(): ReactActivityDelegate =
-      DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+        startButton.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    )
+                    startActivityForResult(intent, 1234)
+                } else {
+                    val serviceIntent = Intent(this, OverlayService::class.java)
+                    startService(serviceIntent)
+                }
+            }
+        }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (!Settings.canDrawOverlays(this)) {
-        // 🔒 Permission not granted → redirect to settings
-        val intent = Intent(
-          Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-          Uri.parse("package:$packageName")
-        )
-        startActivityForResult(intent, 1234)
-      } else {
-        // ✅ Permission already granted → start overlay service
-        val serviceIntent = Intent(this, OverlayService::class.java)
-        startService(serviceIntent)
-      }
+        stopButton.setOnClickListener {
+            val serviceIntent = Intent(this, OverlayService::class.java)
+            stopService(serviceIntent)
+        }
     }
-  }
 }
