@@ -71,10 +71,14 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT
         )
 
-        // Add the overlay box immediately (no bubble toggle)
+        // ✅ Start anchored to the right side
+        params.gravity = android.view.Gravity.TOP or android.view.Gravity.END
+        params.x = 50
+        params.y = 200
+
         windowManager.addView(overlayView, params)
 
-        // Make overlay draggable
+        // ✅ Make overlay draggable with snap-to-edge
         overlayView.setOnTouchListener(object : View.OnTouchListener {
             private var initialX = 0
             private var initialY = 0
@@ -96,10 +100,36 @@ class OverlayService : Service() {
                         windowManager.updateViewLayout(overlayView, params)
                         return true
                     }
+                    MotionEvent.ACTION_UP -> {
+                        val screenWidth = resources.displayMetrics.widthPixels
+                        val centerX = event.rawX
+
+                        // Snap to nearest edge
+                        if (centerX < screenWidth / 2) {
+                            // Snap left
+                            params.gravity = android.view.Gravity.TOP or android.view.Gravity.START
+                            params.x = 0
+                        } else {
+                            // Snap right
+                            params.gravity = android.view.Gravity.TOP or android.view.Gravity.END
+                            params.x = 0
+                        }
+                        windowManager.updateViewLayout(overlayView, params)
+                        return true
+                    }
                 }
                 return false
             }
         })
+
+        // ✅ Minimize button logic
+        val minimizeButton = overlayView.findViewById<ImageButton>(R.id.minimizeButton)
+        val lanesContainer = overlayView.findViewById<View>(R.id.lanesContainer)
+
+        minimizeButton.setOnClickListener {
+            lanesContainer.visibility =
+                if (lanesContainer.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        }
 
         // Attach roles
         setupRole(R.id.expSpinner, R.id.expButton, R.id.expCooldown, "EXP Lane")
@@ -109,15 +139,15 @@ class OverlayService : Service() {
         setupRole(R.id.goldSpinner, R.id.goldButton, R.id.goldCooldown, "Gold Lane")
     }
 
-    // Setup spinner + icon button + cooldown overlay text
     private fun setupRole(spinnerId: Int, buttonId: Int, cooldownId: Int, role: String) {
         val spinner = overlayView.findViewById<Spinner>(spinnerId)
         val button = overlayView.findViewById<ImageButton>(buttonId)
         val cooldownView = overlayView.findViewById<TextView>(cooldownId)
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spells)
+        val adapter = ArrayAdapter(this, R.layout.spinner_item, spells)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
+
 
         var selectedSpell: String? = null
 
@@ -139,7 +169,6 @@ class OverlayService : Service() {
         }
     }
 
-    // Cooldown logic with dim effect
     private fun startCooldown(role: String, spell: String, cooldownView: TextView, button: ImageButton) {
         val duration = cooldowns[spell] ?: return
         handler.post { button.alpha = 0.5f }

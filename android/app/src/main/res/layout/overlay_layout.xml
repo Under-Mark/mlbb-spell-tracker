@@ -6,238 +6,262 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content">
 
-    <!-- EXP Lane -->
+    <!-- Top bar with minimizer button -->
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="4dp"
-        android:layout_marginBottom="6dp">
+        android:gravity="end">
 
-        <TextView
-            android:text="EXP Lane"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <Spinner
-            android:id="@+id/expSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp">
-
-            <ImageButton
-                android:id="@+id/expButton"
-                android:src="@drawable/flicker"
-                android:background="@android:color/transparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="EXP Spell"/>
-
-            <TextView
-                android:id="@+id/expCooldown"
-                android:text="Ready"
-                android:textColor="#00FF00"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
+        <ImageButton
+            android:id="@+id/minimizeButton"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:background="@android:color/transparent"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="Minimize Overlay"/>
     </LinearLayout>
 
-    <!-- Mid Lane -->
+    <!-- Container for all lanes -->
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/lanesContainer"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="4dp"
-        android:layout_marginBottom="6dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Mid Lane"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_width="0dp"
+        <!-- EXP Lane -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <Spinner
-            android:id="@+id/midSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp">
-
-            <ImageButton
-                android:id="@+id/midButton"
-                android:src="@drawable/flicker"
-                android:background="@android:color/transparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="Mid Spell"/>
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:layout_marginBottom="6dp">
 
             <TextView
-                android:id="@+id/midCooldown"
-                android:text="Ready"
-                android:textColor="#00FF00"
+                android:text="EXP Lane"
+                android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
-    </LinearLayout>
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
-    <!-- Roamer -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="4dp"
-        android:layout_marginBottom="6dp">
+            <Spinner
+                android:id="@+id/expSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:text="Roamer"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_width="0dp"
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+                <ImageButton
+                    android:id="@+id/expButton"
+                    android:src="@drawable/flicker"
+                    android:background="@android:color/transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="EXP Spell"/>
+
+                <TextView
+                    android:id="@+id/expCooldown"
+                    android:text="Ready"
+                    android:textColor="#00FF00"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Mid Lane -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <Spinner
-            android:id="@+id/roamerSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp">
-
-            <ImageButton
-                android:id="@+id/roamerButton"
-                android:src="@drawable/flicker"
-                android:background="@android:color/transparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="Roamer Spell"/>
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:layout_marginBottom="6dp">
 
             <TextView
-                android:id="@+id/roamerCooldown"
-                android:text="Ready"
-                android:textColor="#00FF00"
+                android:text="Mid Lane"
+                android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
-    </LinearLayout>
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
-    <!-- Jungler -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="4dp"
-        android:layout_marginBottom="6dp">
+            <Spinner
+                android:id="@+id/midSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:text="Jungler"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_width="0dp"
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+                <ImageButton
+                    android:id="@+id/midButton"
+                    android:src="@drawable/flicker"
+                    android:background="@android:color/transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Mid Spell"/>
+
+                <TextView
+                    android:id="@+id/midCooldown"
+                    android:text="Ready"
+                    android:textColor="#00FF00"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Roamer -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <Spinner
-            android:id="@+id/junglerSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp">
-
-            <ImageButton
-                android:id="@+id/junglerButton"
-                android:src="@drawable/flicker"
-                android:background="@android:color/transparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="Jungler Spell"/>
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:layout_marginBottom="6dp">
 
             <TextView
-                android:id="@+id/junglerCooldown"
-                android:text="Ready"
-                android:textColor="#00FF00"
+                android:text="Roamer"
+                android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
-    </LinearLayout>
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
-    <!-- Gold Lane -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="4dp"
-        android:layout_marginBottom="6dp">
+            <Spinner
+                android:id="@+id/roamerSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:text="Gold Lane"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_width="0dp"
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+                <ImageButton
+                    android:id="@+id/roamerButton"
+                    android:src="@drawable/flicker"
+                    android:background="@android:color/transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Roamer Spell"/>
+
+                <TextView
+                    android:id="@+id/roamerCooldown"
+                    android:text="Ready"
+                    android:textColor="#00FF00"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Jungler -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <Spinner
-            android:id="@+id/goldSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp">
-
-            <ImageButton
-                android:id="@+id/goldButton"
-                android:src="@drawable/flicker"
-                android:background="@android:color/transparent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="Gold Spell"/>
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:layout_marginBottom="6dp">
 
             <TextView
-                android:id="@+id/goldCooldown"
-                android:text="Ready"
-                android:textColor="#00FF00"
+                android:text="Jungler"
+                android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/junglerSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+                <ImageButton
+                    android:id="@+id/junglerButton"
+                    android:src="@drawable/flicker"
+                    android:background="@android:color/transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Jungler Spell"/>
+
+                <TextView
+                    android:id="@+id/junglerCooldown"
+                    android:text="Ready"
+                    android:textColor="#00FF00"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Gold Lane -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:layout_marginBottom="6dp">
+
+            <TextView
+                android:text="Gold Lane"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/goldSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+                <ImageButton
+                    android:id="@+id/goldButton"
+                    android:src="@drawable/flicker"
+                    android:background="@android:color/transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Gold Spell"/>
+
+                <TextView
+                    android:id="@+id/goldCooldown"
+                    android:text="Ready"
+                    android:textColor="#00FF00"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
