@@ -21,14 +21,12 @@ class OverlayService : Service() {
     private lateinit var overlayView: View
     private val handler = Handler()
 
-    // Full MLBB Battle Spells
     private val spells = listOf(
         "Execute", "Retribution", "Inspire", "Sprint",
         "Revitalize", "Aegis", "Petrify", "Purify",
         "Flameshot", "Flicker", "Arrival", "Vengeance"
     )
 
-    // Cooldown durations (seconds)
     private val cooldowns = mapOf(
         "Execute" to 90, "Retribution" to 35, "Inspire" to 75,
         "Sprint" to 100, "Revitalize" to 75, "Aegis" to 75,
@@ -36,7 +34,6 @@ class OverlayService : Service() {
         "Flicker" to 120, "Arrival" to 75, "Vengeance" to 75
     )
 
-    // Spell icons (drawable resources)
     private val spellIcons = mapOf(
         "Execute" to R.drawable.execute,
         "Retribution" to R.drawable.retribution,
@@ -57,7 +54,6 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-
         val inflater = LayoutInflater.from(this)
         overlayView = inflater.inflate(R.layout.overlay_layout, null)
 
@@ -71,14 +67,12 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT
         )
 
-        // ✅ Start anchored to the right side
         params.gravity = android.view.Gravity.TOP or android.view.Gravity.END
         params.x = 50
         params.y = 200
-
         windowManager.addView(overlayView, params)
 
-        // ✅ Make overlay draggable with snap-to-edge
+        // Draggable with snap-to-edge
         overlayView.setOnTouchListener(object : View.OnTouchListener {
             private var initialX = 0
             private var initialY = 0
@@ -103,17 +97,11 @@ class OverlayService : Service() {
                     MotionEvent.ACTION_UP -> {
                         val screenWidth = resources.displayMetrics.widthPixels
                         val centerX = event.rawX
-
-                        // Snap to nearest edge
-                        if (centerX < screenWidth / 2) {
-                            // Snap left
-                            params.gravity = android.view.Gravity.TOP or android.view.Gravity.START
-                            params.x = 0
-                        } else {
-                            // Snap right
-                            params.gravity = android.view.Gravity.TOP or android.view.Gravity.END
-                            params.x = 0
-                        }
+                        params.gravity = if (centerX < screenWidth / 2)
+                            android.view.Gravity.TOP or android.view.Gravity.START
+                        else
+                            android.view.Gravity.TOP or android.view.Gravity.END
+                        params.x = 0
                         windowManager.updateViewLayout(overlayView, params)
                         return true
                     }
@@ -122,24 +110,31 @@ class OverlayService : Service() {
             }
         })
 
-        // ✅ Minimize button logic
-        val minimizeButton = overlayView.findViewById<ImageButton>(R.id.minimizeButton)
+        val toggleButton = overlayView.findViewById<ImageButton>(R.id.minimizeButton)
         val lanesContainer = overlayView.findViewById<View>(R.id.lanesContainer)
 
-        minimizeButton.setOnClickListener {
-            lanesContainer.visibility =
-                if (lanesContainer.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        // ✅ Toggle between minimize (X) and maximize (circle)
+        toggleButton.setOnClickListener {
+            if (lanesContainer.visibility == View.VISIBLE) {
+                lanesContainer.visibility = View.GONE
+                toggleButton.setImageResource(android.R.drawable.radiobutton_off_background) // circle
+                toggleButton.contentDescription = "Maximize Overlay"
+            } else {
+                lanesContainer.visibility = View.VISIBLE
+                toggleButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel) // X
+                toggleButton.contentDescription = "Minimize Overlay"
+            }
         }
 
         // Attach roles
-        setupRole(R.id.expSpinner, R.id.expButton, R.id.expCooldown, "EXP Lane")
-        setupRole(R.id.midSpinner, R.id.midButton, R.id.midCooldown, "Mid Lane")
-        setupRole(R.id.roamerSpinner, R.id.roamerButton, R.id.roamerCooldown, "Roamer")
-        setupRole(R.id.junglerSpinner, R.id.junglerButton, R.id.junglerCooldown, "Jungler")
-        setupRole(R.id.goldSpinner, R.id.goldButton, R.id.goldCooldown, "Gold Lane")
+        setupRole(R.id.expSpinner, R.id.expButton, R.id.expCooldown)
+        setupRole(R.id.midSpinner, R.id.midButton, R.id.midCooldown)
+        setupRole(R.id.roamerSpinner, R.id.roamerButton, R.id.roamerCooldown)
+        setupRole(R.id.junglerSpinner, R.id.junglerButton, R.id.junglerCooldown)
+        setupRole(R.id.goldSpinner, R.id.goldButton, R.id.goldCooldown)
     }
 
-    private fun setupRole(spinnerId: Int, buttonId: Int, cooldownId: Int, role: String) {
+    private fun setupRole(spinnerId: Int, buttonId: Int, cooldownId: Int) {
         val spinner = overlayView.findViewById<Spinner>(spinnerId)
         val button = overlayView.findViewById<ImageButton>(buttonId)
         val cooldownView = overlayView.findViewById<TextView>(cooldownId)
@@ -148,28 +143,28 @@ class OverlayService : Service() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-
         var selectedSpell: String? = null
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedSpell = spells[position]
                 cooldownView.text = "Ready"
-                cooldownView.setTextColor(Color.GREEN)
+                cooldownView.setTextColor(Color.GREEN) // ✅ Ready is green
                 spellIcons[selectedSpell]?.let { button.setImageResource(it) }
                 button.alpha = 1.0f
+                (view as? TextView)?.setTextColor(Color.parseColor("#2196F3")) // selected item text blue
             }
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
         button.setOnClickListener {
             selectedSpell?.let {
-                startCooldown(role, it, cooldownView, button)
+                startCooldown(it, cooldownView, button)
             }
         }
     }
 
-    private fun startCooldown(role: String, spell: String, cooldownView: TextView, button: ImageButton) {
+    private fun startCooldown(spell: String, cooldownView: TextView, button: ImageButton) {
         val duration = cooldowns[spell] ?: return
         handler.post { button.alpha = 0.5f }
 
@@ -183,7 +178,7 @@ class OverlayService : Service() {
             }
             handler.post {
                 cooldownView.text = "Ready"
-                cooldownView.setTextColor(Color.GREEN)
+                cooldownView.setTextColor(Color.GREEN) // ✅ Ready is green
                 button.alpha = 1.0f
             }
         }.start()
