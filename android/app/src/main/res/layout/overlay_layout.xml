@@ -47,10 +47,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
-            <Spinner
+            <AutoCompleteTextView
                 android:id="@+id/expSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#2196F3"
+                android:hint="Select spell"
+                android:dropDownHeight="200dp"
+                android:dropDownWidth="wrap_content"/>
 
             <FrameLayout
                 android:layout_width="48dp"
@@ -94,10 +102,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
-            <Spinner
+            <AutoCompleteTextView
                 android:id="@+id/midSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#2196F3"
+                android:hint="Select spell"
+                android:dropDownHeight="200dp"
+                android:dropDownWidth="wrap_content"/>
 
             <FrameLayout
                 android:layout_width="48dp"
@@ -141,10 +157,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
-            <Spinner
+            <AutoCompleteTextView
                 android:id="@+id/roamerSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#2196F3"
+                android:hint="Select spell"
+                android:dropDownHeight="200dp"
+                android:dropDownWidth="wrap_content"/>
 
             <FrameLayout
                 android:layout_width="48dp"
@@ -188,10 +212,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
-            <Spinner
+            <AutoCompleteTextView
                 android:id="@+id/junglerSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#2196F3"
+                android:hint="Select spell"
+                android:dropDownHeight="200dp"
+                android:dropDownWidth="wrap_content"/>
 
             <FrameLayout
                 android:layout_width="48dp"
@@ -235,10 +267,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
 
-            <Spinner
+                    <AutoCompleteTextView
                 android:id="@+id/goldSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#2196F3"
+                android:hint="Select spell"
+                android:dropDownHeight="200dp"
+                android:dropDownWidth="wrap_content"/>
 
             <FrameLayout
                 android:layout_width="48dp"
@@ -262,6 +302,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </FrameLayout>
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+        </LinearLayout>   <!-- closes Gold Lane -->
+
+    </LinearLayout>       <!-- closes lanesContainer -->
+</LinearLayout>           <!-- closes root -->

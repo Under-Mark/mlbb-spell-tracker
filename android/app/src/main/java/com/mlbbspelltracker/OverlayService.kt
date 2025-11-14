@@ -15,9 +15,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
-import android.widget.AdapterView
+import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
-import android.widget.Spinner
 import android.widget.TextView
 
 class OverlayService : Service() {
@@ -139,28 +138,28 @@ class OverlayService : Service() {
     }
 
     private fun setupRole(spinnerId: Int, buttonId: Int, cooldownId: Int) {
-        val spinner = overlayView.findViewById<Spinner>(spinnerId)
+        val actv = overlayView.findViewById<AutoCompleteTextView>(spinnerId)
         val button = overlayView.findViewById<ImageButton>(buttonId)
         val cooldownView = overlayView.findViewById<TextView>(cooldownId)
 
         val adapter = ArrayAdapter(this, R.layout.spinner_item, spells)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        actv.setAdapter(adapter)
+        actv.threshold = 1000 // disables filtering, shows full list
+
+        actv.setOnClickListener { actv.showDropDown() }
 
         var selectedSpell: String? = null
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedSpell = spells[position]
-                cooldownView.text = "Ready"
-                cooldownView.setTextColor(Color.GREEN)
-                spellIcons[selectedSpell]?.let { button.setImageResource(it) }
-                button.alpha = 1.0f
-                (view as? TextView)?.setTextColor(Color.parseColor("#2196F3"))
+        actv.setOnItemClickListener { _, _, position, _ ->
+            selectedSpell = spells[position]
+            actv.setText(selectedSpell, false)
 
-                activeTimers[cooldownView]?.cancel()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {}
+            cooldownView.text = "Ready"
+            cooldownView.setTextColor(Color.GREEN)
+            spellIcons[selectedSpell]?.let { button.setImageResource(it) }
+            button.alpha = 1.0f
+
+            activeTimers[cooldownView]?.cancel()
         }
 
         button.setOnClickListener {
@@ -188,7 +187,7 @@ class OverlayService : Service() {
                 cooldownView.setTextColor(Color.GREEN)
                 button.alpha = 1.0f
 
-                // ✅ Double‑pulse vibration when spell is ready
+                // Double‑pulse vibration when spell is ready
                 val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     val vm = getSystemService(VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
                     vm.defaultVibrator
