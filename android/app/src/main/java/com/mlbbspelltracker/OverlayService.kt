@@ -4,8 +4,12 @@ import android.app.Service
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.IBinder
+import android.os.Vibrator
+import android.os.VibrationEffect
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -48,6 +52,8 @@ class OverlayService : Service() {
         "Arrival" to R.drawable.arrival,
         "Vengeance" to R.drawable.vengeance
     )
+
+    private val activeTimers = mutableMapOf<TextView, CountDownTimer>()
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -113,20 +119,18 @@ class OverlayService : Service() {
         val toggleButton = overlayView.findViewById<ImageButton>(R.id.minimizeButton)
         val lanesContainer = overlayView.findViewById<View>(R.id.lanesContainer)
 
-        // ✅ Toggle between minimize (X) and maximize (circle)
         toggleButton.setOnClickListener {
             if (lanesContainer.visibility == View.VISIBLE) {
                 lanesContainer.visibility = View.GONE
-                toggleButton.setImageResource(android.R.drawable.radiobutton_off_background) // circle
+                toggleButton.setImageResource(android.R.drawable.radiobutton_off_background)
                 toggleButton.contentDescription = "Maximize Overlay"
             } else {
                 lanesContainer.visibility = View.VISIBLE
-                toggleButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel) // X
+                toggleButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
                 toggleButton.contentDescription = "Minimize Overlay"
             }
         }
 
-        // Attach roles
         setupRole(R.id.expSpinner, R.id.expButton, R.id.expCooldown)
         setupRole(R.id.midSpinner, R.id.midButton, R.id.midCooldown)
         setupRole(R.id.roamerSpinner, R.id.roamerButton, R.id.roamerCooldown)
@@ -149,10 +153,12 @@ class OverlayService : Service() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedSpell = spells[position]
                 cooldownView.text = "Ready"
-                cooldownView.setTextColor(Color.GREEN) // ✅ Ready is green
+                cooldownView.setTextColor(Color.GREEN)
                 spellIcons[selectedSpell]?.let { button.setImageResource(it) }
                 button.alpha = 1.0f
-                (view as? TextView)?.setTextColor(Color.parseColor("#2196F3")) // selected item text blue
+                (view as? TextView)?.setTextColor(Color.parseColor("#2196F3"))
+
+                activeTimers[cooldownView]?.cancel()
             }
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
@@ -166,26 +172,49 @@ class OverlayService : Service() {
 
     private fun startCooldown(spell: String, cooldownView: TextView, button: ImageButton) {
         val duration = cooldowns[spell] ?: return
-        handler.post { button.alpha = 0.5f }
 
-        Thread {
-            for (i in duration downTo 1) {
-                Thread.sleep(1000)
-                handler.post {
-                    cooldownView.text = "$i s"
-                    cooldownView.setTextColor(Color.YELLOW)
+        activeTimers[cooldownView]?.cancel()
+        button.alpha = 0.5f
+
+        val timer = object : CountDownTimer(duration * 1000L, 1000L) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsLeft = (millisUntilFinished / 1000).toInt()
+                cooldownView.text = "$secondsLeft s"
+                cooldownView.setTextColor(Color.YELLOW)
+            }
+
+            override fun onFinish() {
+                cooldownView.text = "Ready"
+                cooldownView.setTextColor(Color.GREEN)
+                button.alpha = 1.0f
+
+                // ✅ Double‑pulse vibration when spell is ready
+                val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val vm = getSystemService(VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
+                    vm.defaultVibrator
+                } else {
+                    getSystemService(VIBRATOR_SERVICE) as Vibrator
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val pattern = longArrayOf(0, 200, 100, 200)
+                    vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+                } else {
+                    @Suppress("DEPRECATION")
+                    vibrator.vibrate(longArrayOf(0, 200, 100, 200), -1)
                 }
             }
-            handler.post {
-                cooldownView.text = "Ready"
-                cooldownView.setTextColor(Color.GREEN) // ✅ Ready is green
-                button.alpha = 1.0f
-            }
-        }.start()
+        }
+
+        timer.start()
+        activeTimers[cooldownView] = timer
     }
 
     override fun onDestroy() {
         super.onDestroy()
         windowManager.removeView(overlayView)
+
+        activeTimers.values.forEach { it.cancel() }
+        activeTimers.clear()
     }
 }
